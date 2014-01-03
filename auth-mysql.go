@@ -19,8 +19,7 @@ func exitWithCode() {
 func main() {
 	defer exitWithCode()
 
-	user := os.Getenv("username")
-	pass := os.Getenv("password")
+	user, pass := credentialsFromEnvironment()
 
 	if len(user) == 0 || len(pass) == 0 {
 		fmt.Println("Username / Password not available.")
@@ -74,4 +73,10 @@ func main() {
 			return
 		}
 	}
+}
+
+func credentialsFromEnvironment() (string, string) {
+	user := os.Getenv("username")
+	pass := os.Getenv("password")
+	return user, pass
 }
