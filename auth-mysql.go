@@ -38,7 +38,7 @@ func main() {
 
 	defer db.Close()
 
-	rows, _, err := db.Query("select name, password from openvpn_users where name = '%s'", user)
+	rows, _, err := db.Query("select password from openvpn_users where name = '%s'", user)
 	if err != nil {
 		fmt.Printf("Error getting data: %v\n", err)
 		return
@@ -50,9 +50,7 @@ func main() {
 	}
 
 	for _, row := range rows {
-		dbUser := row.Str(0)
-		hashed := row.Str(1)
-		fmt.Printf("User: %s Password: %s\n", dbUser, hashed)
+		hashed := row.Str(0)
 		hashedTokens := strings.Split(hashed, "|")
 		if len(hashedTokens) != 3 {
 			fmt.Printf("Invalid hash string: %s\n", hashed)
@@ -72,7 +70,7 @@ func main() {
 			exitCode = 0
 			return
 		} else {
-			fmt.Printf("User invalid: %s %s\n", dbHash, myHash)
+			fmt.Println("User invalid.")
 			return
 		}
 	}
