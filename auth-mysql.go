@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"crypto/sha256"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"github.com/ziutek/mymysql/mysql"
 	_ "github.com/ziutek/mymysql/native"
@@ -19,7 +21,13 @@ func exitWithCode() {
 func main() {
 	defer exitWithCode()
 
-	user, pass := credentialsFromEnvironment()
+	var user, pass string
+	flag.Parse()
+	if flag.NArg() == 0 {
+		user, pass = credentialsFromEnvironment()
+	} else {
+		user, pass = credentialsFromFile()
+	}
 
 	if len(user) == 0 || len(pass) == 0 {
 		fmt.Println("Username / Password not available.")
@@ -79,4 +87,25 @@ func credentialsFromEnvironment() (string, string) {
 	user := os.Getenv("username")
 	pass := os.Getenv("password")
 	return user, pass
+}
+
+func credentialsFromFile() (string, string) {
+	fileName := flag.Arg(0)
+	reader, err := os.Open(fileName)
+	if err != nil {
+		fmt.Printf("Error opening credentials file: %v\n", err)
+		return "", ""
+	}
+	defer reader.Close()
+
+	input := bufio.NewScanner(reader)
+	if input.Scan() {
+		user := input.Text()
+		if input.Scan() {
+			pass := input.Text()
+			return user, pass
+		}
+		return user, ""
+	}
+	return "", ""
 }
