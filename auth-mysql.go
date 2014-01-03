@@ -10,7 +10,15 @@ import (
 	"strings"
 )
 
+var exitCode int = 1
+
+func exitWithCode() {
+	os.Exit(exitCode)
+}
+
 func main() {
+	defer exitWithCode()
+
 	user := os.Getenv("username")
 	pass := os.Getenv("password")
 
@@ -61,8 +69,11 @@ func main() {
 		myHash := hex.EncodeToString(myHashBytes[:])
 		if dbHash == myHash {
 			fmt.Println("User valid.")
+			exitCode = 0
+			return
 		} else {
 			fmt.Printf("User invalid: %s %s\n", dbHash, myHash)
+			return
 		}
 	}
 }
