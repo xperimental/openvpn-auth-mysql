@@ -3,6 +3,11 @@ openvpn-auth-mysql
 
 A simple script written in Go to authenticate OpenVPN users against a simple MySQL table. The passwords are salted and hashed with SHA-256, a script to hash new passwords is also provided in `hash-password.go`.
 
+[![Build Status](https://travis-ci.org/xperimental/openvpn-auth-mysql.png)](https://travis-ci.org/xperimental/openvpn-auth-mysql)
+
+Usage
+-----
+
 To use this script in your OpenVPN installation add the following to your OpenVPN server configuration file:
 
     auth-user-pass-verify /path/to/script/openvpn-auth-mysql via-file
